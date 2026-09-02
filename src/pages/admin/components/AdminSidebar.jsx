@@ -9,7 +9,9 @@ import {
   AlertCircle, 
   Lock, 
   ArrowLeft,
-  X
+  X,
+  Database,
+  Bot
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -132,6 +134,37 @@ export default function AdminSidebar({
             );
           })}
         </nav>
+
+        {/* Internal Developer Sandbox Links */}
+        <div className="pt-2 border-t border-stone-800/80">
+          <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block px-2 mb-1.5">
+            Internal Sandboxes
+          </span>
+          <div className="space-y-0.5">
+            <Link
+              to="/escrow-simulator"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-stone-400 hover:text-amber-300 hover:bg-stone-800/60 transition-colors text-[11px]"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Escrow Simulator</span>
+            </Link>
+            <Link
+              to="/database-admin"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-stone-400 hover:text-indigo-300 hover:bg-stone-800/60 transition-colors text-[11px]"
+            >
+              <Database className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <span>Postgres Schema DDL</span>
+            </Link>
+            <Link
+              to="/telegram-bot-demo"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-stone-400 hover:text-sky-300 hover:bg-stone-800/60 transition-colors text-[11px]"
+            >
+              <Bot className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <span>Telegram Bot Playground</span>
+            </Link>
+          </div>
+        </div>
+
       </div>
 
       {/* Bottom Vault Widget & Exit Link */}

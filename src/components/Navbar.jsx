@@ -39,7 +39,7 @@ export default function Navbar({
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
-  const isMoreActive = ['/gear-guide', '/partners', '/contact', '/admin'].includes(location.pathname);
+  const isMoreActive = ['/gear-guide', '/partners', '/contact'].includes(location.pathname);
 
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-stone-200/80 transition-all shadow-xs tibeb-border-top">
@@ -185,24 +185,7 @@ export default function Navbar({
                       }
                     >
                       <Phone className="w-4 h-4 text-sky-600" />
-                      <span>{lang === 'am' ? 'ያግኙን' : 'Contact Support'}</span>
                     </NavLink>
-
-                    <div className="pt-1 mt-1 border-t border-stone-100">
-                      <NavLink
-                        to="/admin"
-                        className={({ isActive }) =>
-                          `flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all font-semibold ${
-                            isActive
-                              ? 'bg-emerald-800 text-white font-bold'
-                              : 'text-stone-600 hover:bg-emerald-50 hover:text-emerald-900'
-                          }`
-                        }
-                      >
-                        <ShieldCheck className="w-4 h-4 text-emerald-700" />
-                        <span>{lang === 'am' ? 'የአድሚን ገጽ' : 'Admin Console'}</span>
-                      </NavLink>
-                    </div>
                   </div>
                 </>
               )}
@@ -482,14 +465,25 @@ export default function Navbar({
               <span>Host Portal</span>
             </Link>
 
-            <Link
-              to="/admin"
-              onClick={closeMobileMenu}
-              className="p-3 rounded-2xl bg-emerald-950 border border-emerald-700 text-emerald-300 text-xs font-extrabold flex items-center justify-center gap-2"
-            >
-              <ShieldCheck className="w-4 h-4 text-amber-300" />
-              <span>Master Admin</span>
-            </Link>
+            {isAuthenticated && user?.role === 'admin' ? (
+              <Link
+                to="/admin"
+                onClick={closeMobileMenu}
+                className="p-3 rounded-2xl bg-emerald-950 border border-emerald-700 text-emerald-300 text-xs font-extrabold flex items-center justify-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-300" />
+                <span>Admin Console</span>
+              </Link>
+            ) : (
+              <Link
+                to="/partners"
+                onClick={closeMobileMenu}
+                className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-center gap-2"
+              >
+                <Users className="w-4 h-4 text-emerald-700" />
+                <span>{lang === 'am' ? 'አስጎብኚ ይሁኑ' : 'Partner with Us'}</span>
+              </Link>
+            )}
           </div>
 
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, Send, Phone, Mail, MapPin, Heart, ShieldCheck, Lock, Bot, Database, LayoutDashboard, Map, Camera, CheckSquare } from 'lucide-react';
+import { Compass, Send, Phone, Mail, MapPin, ShieldCheck, LayoutDashboard, Map, Camera, CheckSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer({ lang, onOpenPartnerModal: _onOpenPartnerModal }) {
@@ -74,22 +74,17 @@ export default function Footer({ lang, onOpenPartnerModal: _onOpenPartnerModal }
               <li><Link to="/about" className="hover:text-white transition-colors">{lang === 'am' ? 'ስለ እኛ' : 'About Us'}</Link></li>
               <li><Link to="/partners" className="hover:text-white transition-colors">{lang === 'am' ? 'አስጎብኚ ይሁኑ' : 'Become a Partner'}</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">{lang === 'am' ? 'ያግኙን' : 'Contact Us'}</Link></li>
+              <li><Link to="/gear-guide" className="hover:text-white transition-colors">{lang === 'am' ? 'የእቃ ዝርዝር መመሪያ' : 'Trek Gear Checklist'}</Link></li>
               <li className="pt-2 border-t border-stone-800">
                 <Link to="/organizer/dashboard" className="text-amber-400 hover:text-amber-300 font-semibold transition-colors flex items-center gap-1.5">
                   <LayoutDashboard className="w-3.5 h-3.5" />
                   <span>Host Portal</span>
                 </Link>
               </li>
-              <li>
-                <Link to="/admin" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Platform Admin</span>
-                </Link>
-              </li>
             </ul>
           </div>
 
-          {/* Col 5: Local Payments & Developer Sandboxes */}
+          {/* Col 5: Local Payments & Escrow Protection */}
           <div>
             <h4 className="font-bold text-white text-sm mb-4">
               {lang === 'am' ? 'ክፍያና ዋስትና' : 'Payments & Escrow'}
@@ -105,29 +100,33 @@ export default function Footer({ lang, onOpenPartnerModal: _onOpenPartnerModal }
                 <ShieldCheck className="w-4 h-4" />
                 <span>100% Payout Protection</span>
               </div>
-              <span className="text-[10px] text-stone-500 block leading-tight">
+              <span className="text-[10px] text-stone-400 block leading-tight">
                 Funds released to organizers only upon passenger trip completion.
               </span>
             </div>
 
-            {/* Developer Sandboxes */}
+            {/* Verified Payment Partners */}
             <div className="pt-3">
-              <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block mb-2">
-                Developer Sandbox
+              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-2">
+                {lang === 'am' ? 'የተረጋገጡ የክፍያ አማራጮች' : 'Official Payment Partners'}
               </span>
-              <div className="space-y-1.5 text-xs">
-                <Link to="/database-admin" className="text-stone-400 hover:text-white flex items-center gap-1.5 transition-colors">
-                  <Database className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>PostgreSQL Schema DDL</span>
-                </Link>
-                <Link to="/escrow-simulator" className="text-stone-400 hover:text-white flex items-center gap-1.5 transition-colors">
-                  <Lock className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Telebirr Escrow Simulator</span>
-                </Link>
-                <Link to="/telegram-bot-demo" className="text-stone-400 hover:text-white flex items-center gap-1.5 transition-colors">
-                  <Bot className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Telegram Bot Client</span>
-                </Link>
+              <div className="grid grid-cols-2 gap-1.5 text-xs font-semibold">
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-stone-900 border border-stone-800 text-stone-200">
+                  <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
+                  <span>Telebirr</span>
+                </div>
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-stone-900 border border-stone-800 text-stone-200">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
+                  <span>CBE Birr</span>
+                </div>
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-stone-900 border border-stone-800 text-stone-200">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                  <span>Chapa</span>
+                </div>
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-stone-900 border border-stone-800 text-stone-200">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                  <span>Awash Birr</span>
+                </div>
               </div>
             </div>
 
