@@ -95,19 +95,28 @@ export default function PrintableTicketModal({
             </div>
 
             <div>
-              <span className="text-[10px] text-stone-400 uppercase block font-bold">Seats & Total Paid</span>
-              <strong className="text-xs text-stone-900 block">{ticket.seats} Passenger Seat(s)</strong>
+              <span className="text-[10px] text-stone-400 uppercase block font-bold">Toyota Coaster Seat(s)</span>
+              <strong className="text-xs text-emerald-900 block font-mono font-black">
+                {ticket.seatNumbers ? `Seat ${ticket.seatNumbers}` : `${ticket.seats} Passenger Seat(s)`}
+              </strong>
               <span className="text-[11px] text-emerald-800 font-black font-mono">
-                {ticket.totalPaidETB?.toLocaleString()} ETB (Verified Telebirr)
+                {ticket.totalPaidETB?.toLocaleString()} ETB (Verified {ticket.paymentMethod || 'Telebirr'})
               </span>
             </div>
           </div>
 
           {/* Pickup & Bus Info */}
           <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 space-y-1 text-xs">
-            <div className="flex items-center gap-1.5 font-bold text-emerald-950">
-              <MapPin className="w-3.5 h-3.5 text-emerald-700" />
-              <span>Pickup Landmark & Boarding Time:</span>
+            <div className="flex items-center justify-between font-bold text-emerald-950">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Addis Ababa Boarding Hub & Time:</span>
+              </div>
+              {ticket.boardingTime && (
+                <span className="bg-amber-100 text-amber-950 px-2 py-0.5 rounded-md font-mono text-[10px] font-bold border border-amber-300">
+                  Boarding: {ticket.boardingTime}
+                </span>
+              )}
             </div>
             <p className="text-xs font-semibold text-stone-800 pl-5">
               {ticket.pickupLocation || 'Meskel Square (In front of Tourist Hotel), Addis Ababa (06:00 AM)'}
