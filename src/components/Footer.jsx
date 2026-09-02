@@ -1,6 +1,7 @@
 import React from 'react';
-import { Compass, Send, Phone, Mail, MapPin, ShieldCheck, LayoutDashboard, Map, Camera, CheckSquare } from 'lucide-react';
+import { Send, Phone, Mail, MapPin, ShieldCheck, LayoutDashboard, Map, Camera, CheckSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import GuzoLogo from './GuzoLogo';
 
 export default function Footer({ lang, onOpenPartnerModal: _onOpenPartnerModal }) {
   return (
@@ -11,15 +12,8 @@ export default function Footer({ lang, onOpenPartnerModal: _onOpenPartnerModal }
           
           {/* Col 1 & 2: Brand & Contact */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-700 via-amber-600 to-red-600 p-0.5 shadow-md flex items-center justify-center">
-                <div className="w-full h-full bg-stone-900 rounded-[14px] flex items-center justify-center">
-                  <Compass className="w-5 h-5 text-amber-400" />
-                </div>
-              </div>
-              <span className="font-bold text-2xl tracking-tight text-white font-serif">
-                Guzo<span className="text-emerald-500">Tribe</span>
-              </span>
+            <Link to="/" className="inline-block group">
+              <GuzoLogo size="md" variant="white" />
             </Link>
 
             <p className="text-xs sm:text-sm text-stone-400 leading-relaxed max-w-sm">

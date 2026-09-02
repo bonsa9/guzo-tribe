@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import HeroSection from '../components/HeroSection';
 import MetricsBar from '../components/MetricsBar';
 import DestinationsSection from '../components/DestinationsSection';
 import VerifiedOrganizers from '../components/VerifiedOrganizers';
 import TripCard from '../components/TripCard';
-import { ArrowRight, Sparkles, Send } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 
 export default function HomePage({
   trips,
@@ -20,8 +21,23 @@ export default function HomePage({
   onToggleWishlist
 }) {
   const navigate = useNavigate();
+  const featuredSectionRef = useRef(null);
 
-  const handleSelectDestination = (destName) => {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.featured-card-wrapper', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.16,
+        duration: 0.85,
+        ease: 'power3.out'
+      });
+    }, featuredSectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleSelectDestination = (_destName) => {
     navigate('/trips');
   };
 
@@ -66,20 +82,21 @@ export default function HomePage({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div ref={featuredSectionRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredTrips.map((trip) => (
-              <TripCard
-                key={trip.id}
-                trip={trip}
-                currency={currency}
-                lang={lang}
-                isCompared={comparedTrips.some((t) => t.id === trip.id)}
-                onToggleCompare={() => onToggleCompare(trip)}
-                onViewDetails={() => onViewDetails(trip)}
-                onBookNow={() => onBookNow(trip)}
-                isWishlisted={wishlist && wishlist.includes(trip.id)}
-                onToggleWishlist={onToggleWishlist}
-              />
+              <div key={trip.id} className="featured-card-wrapper">
+                <TripCard
+                  trip={trip}
+                  currency={currency}
+                  lang={lang}
+                  isCompared={comparedTrips.some((t) => t.id === trip.id)}
+                  onToggleCompare={() => onToggleCompare(trip)}
+                  onViewDetails={() => onViewDetails(trip)}
+                  onBookNow={() => onBookNow(trip)}
+                  isWishlisted={wishlist && wishlist.includes(trip.id)}
+                  onToggleWishlist={onToggleWishlist}
+                />
+              </div>
             ))}
           </div>
 

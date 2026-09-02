@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Calendar, CheckCircle2, ShieldCheck, CreditCard, Sparkles, ArrowRight } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Search, MapPin, Calendar, CheckCircle2, ShieldCheck, CreditCard, Sparkles } from 'lucide-react';
+import gsap from 'gsap';
 
 export default function HeroSection({ 
   lang, 
@@ -9,7 +10,81 @@ export default function HeroSection({
   setSelectedCategory,
   onSearchSubmit
 }) {
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const heroContainerRef = useRef(null);
+  const badgeRef = useRef(null);
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const searchBarRef = useRef(null);
+  const quickPillsRef = useRef(null);
+  const trustBarRef = useRef(null);
+  const glow1Ref = useRef(null);
+  const glow2Ref = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Staggered Entrance Timeline
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      tl.fromTo(
+        badgeRef.current,
+        { opacity: 0, y: -25, scale: 0.9 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.7 }
+      )
+        .fromTo(
+          titleRef.current,
+          { opacity: 0, y: 35, rotationX: 12 },
+          { opacity: 1, y: 0, rotationX: 0, duration: 0.9 },
+          '-=0.4'
+        )
+        .fromTo(
+          subtitleRef.current,
+          { opacity: 0, y: 25 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          '-=0.5'
+        )
+        .fromTo(
+          searchBarRef.current,
+          { opacity: 0, y: 40, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: 'back.out(1.2)' },
+          '-=0.5'
+        )
+        .fromTo(
+          quickPillsRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          '-=0.3'
+        )
+        .fromTo(
+          trustBarRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7 },
+          '-=0.3'
+        );
+
+      // 2. Ambient Floating Animation for Highland Glows
+      gsap.to(glow1Ref.current, {
+        x: '+=35',
+        y: '-=25',
+        scale: 1.1,
+        duration: 6,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+
+      gsap.to(glow2Ref.current, {
+        x: '-=30',
+        y: '+=20',
+        scale: 1.15,
+        duration: 7,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      });
+    }, heroContainerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const quickPopular = [
     'Wenchi Crater',
@@ -26,7 +101,10 @@ export default function HeroSection({
   };
 
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-stone-900 py-16 px-4 sm:px-6 lg:px-8">
+    <section 
+      ref={heroContainerRef}
+      className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-stone-900 py-16 px-4 sm:px-6 lg:px-8 perspective-1000"
+    >
       {/* Background Image with Ethiopian Highlands/Lakes Overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 scale-105"
@@ -37,20 +115,32 @@ export default function HeroSection({
         <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-900/60 to-stone-950/90" />
       </div>
 
-      {/* Decorative Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-72 h-72 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+      {/* Decorative Floating Ambient Glows */}
+      <div 
+        ref={glow1Ref}
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" 
+      />
+      <div 
+        ref={glow2Ref}
+        className="absolute bottom-10 right-10 w-72 h-72 bg-amber-500/15 rounded-full blur-2xl pointer-events-none" 
+      />
 
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         
         {/* Top Tagline Pill */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-6 shadow-inner">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+        <div 
+          ref={badgeRef}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-6 shadow-inner cursor-default"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
           <span>{lang === 'am' ? 'የኢትዮጵያ የመጀመሪያው የማህበረሰብ ጉዞ ማዕከል' : "Ethiopia's First Community Trip Aggregator"}</span>
         </div>
 
         {/* Hero Title with Dual Amharic/English Punch */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
+        <h1 
+          ref={titleRef}
+          className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6 font-serif"
+        >
           {lang === 'am' ? (
             <>
               ጉዞህን ከጓደኞችህ ጋር <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-200">ጀምር።</span>
@@ -65,7 +155,10 @@ export default function HeroSection({
           )}
         </h1>
 
-        <p className="text-base sm:text-lg lg:text-xl text-stone-200/90 max-w-2xl mx-auto mb-10 font-normal leading-relaxed">
+        <p 
+          ref={subtitleRef}
+          className="text-base sm:text-lg lg:text-xl text-stone-200/90 max-w-2xl mx-auto mb-10 font-normal leading-relaxed"
+        >
           {lang === 'am'
             ? 'ከተረጋገጡ የኢትዮጵያ አስጎብኚዎች ጋር የተዘጋጁ የቡድን ጉዞዎችን ይፈልጉ፣ ዋጋና ይዘት ያነጻጽሩ፣ በTelebirr ወይም በCBE በደህና ይያዙ።'
             : 'Discover curated group trips across Ethiopia. Compare prices, inclusions, and difficulty side-by-side. Book with 100% verified local operators.'}
@@ -73,7 +166,10 @@ export default function HeroSection({
 
         {/* Interactive Search Bar */}
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-          <div className="bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-3xl shadow-2xl border border-stone-200/60 text-left">
+          <div 
+            ref={searchBarRef}
+            className="bg-white/95 backdrop-blur-xl p-3 sm:p-4 rounded-3xl shadow-2xl border border-stone-200/60 text-left transition-all duration-300 hover:shadow-emerald-950/20"
+          >
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
               
               {/* Destination Input */}
@@ -131,7 +227,10 @@ export default function HeroSection({
         </form>
 
         {/* Quick Popular Search Tags */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-stone-300 font-medium">
+        <div 
+          ref={quickPillsRef}
+          className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-stone-300 font-medium"
+        >
           <span className="text-stone-400">{lang === 'am' ? 'ተወዳጅ መዳረሻዎች፡' : 'Popular:'}</span>
           {quickPopular.map((item, idx) => (
             <button
@@ -140,7 +239,7 @@ export default function HeroSection({
                 setSearchTerm(item);
                 if (onSearchSubmit) onSearchSubmit();
               }}
-              className="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-stone-200 border border-white/10 transition-all cursor-pointer"
+              className="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-stone-200 border border-white/10 transition-all cursor-pointer hover:border-amber-400/50"
             >
               {item}
             </button>
@@ -148,7 +247,10 @@ export default function HeroSection({
         </div>
 
         {/* Trust Badges Bar */}
-        <div className="mt-12 pt-6 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-stone-300 text-xs sm:text-sm font-medium">
+        <div 
+          ref={trustBarRef}
+          className="mt-12 pt-6 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-stone-300 text-xs sm:text-sm font-medium"
+        >
           <div className="flex items-center justify-center gap-2.5">
             <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>{lang === 'am' ? '100% የተረጋገጡ አስጎብኚዎች' : '100% Verified Local Operators'}</span>

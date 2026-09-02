@@ -19,6 +19,7 @@ import InteractiveMapPage from './pages/InteractiveMapPage';
 import GearGuidePage from './pages/GearGuidePage';
 import CommunityPage from './pages/CommunityPage';
 import TripDetailPage from './pages/TripDetailPage';
+import GroupSplitPayPage from './pages/GroupSplitPayPage';
 import ComparisonDrawer from './components/ComparisonDrawer';
 import TripDetailModal from './components/TripDetailModal';
 import BookingModal from './components/BookingModal';
@@ -307,6 +308,10 @@ function MainContent() {
           <Route
             path="/contact"
             element={<ContactPage lang={lang} />}
+          />
+          <Route
+            path="/group-pay/:splitId"
+            element={<GroupSplitPayPage lang={lang} currency={currency} />}
           />
         </Routes>
       </main>

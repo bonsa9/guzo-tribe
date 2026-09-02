@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Compass, 
   Globe, 
   Heart, 
   LayoutDashboard, 
@@ -18,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import GuzoLogo from './GuzoLogo';
 
 export default function Navbar({ 
   currency, 
@@ -46,26 +46,8 @@ export default function Navbar({
       <div className="max-w-7xl xl:max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
           
-          {/* Brand Logo & Ethiopian Flag Motif */}
-          <Link to="/" onClick={closeMobileMenu} className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-700 via-amber-500 to-red-600 p-0.5 shadow-md flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-emerald-900/20">
-              <div className="w-full h-full bg-stone-950 rounded-[14px] flex items-center justify-center">
-                <Compass className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400 group-hover:rotate-45 transition-transform duration-500" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-stone-900 font-serif">
-                  Guzo<span className="text-emerald-700">Tribe</span>
-                </span>
-                <span className="text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-gradient-to-r from-emerald-100 via-amber-100 to-red-100 text-stone-900 border border-amber-300 shadow-2xs font-ethiopic">
-                  ጉዞትራይብ
-                </span>
-              </div>
-              <p className="text-[9px] sm:text-[10px] text-stone-500 font-medium tracking-wider uppercase hidden xs:block">
-                Ethiopian Group Travel Hub
-              </p>
-            </div>
+          <Link to="/" onClick={closeMobileMenu} className="cursor-pointer group shrink-0">
+            <GuzoLogo size="md" variant="dark" />
           </Link>
 
           {/* Clean Streamlined Desktop Nav Links */}

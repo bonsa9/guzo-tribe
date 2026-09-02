@@ -14,8 +14,10 @@ import {
   Tag,
   Gift,
   Printer,
-  Bus
+  Bus,
+  Users
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useAuth } from '../context/AuthContext';
 import PickupStationSelector from './booking/PickupStationSelector';
@@ -33,12 +35,14 @@ export default function BookingModal({
 }) {
   const { user: authUser } = useAuth();
   const activeUser = user || authUser;
+  const navigate = useNavigate();
 
   const [step, setStep] = useState(1); // 1: Info & Station, 2: Bus Seats, 3: Payment, 4: Confirmed
   const [ticketCount, setTicketCount] = useState(1);
   const [selectedPickupId, setSelectedPickupId] = useState('meskel-square');
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [splitMode, setSplitMode] = useState(false);
 
   const [paymentMethod, setPaymentMethod] = useState('telebirr'); // telebirr, cbe, chapa
   const [promoCode, setPromoCode] = useState('');
@@ -422,16 +426,94 @@ export default function BookingModal({
                   </button>
                 </div>
 
-                <div className="text-center max-w-sm mx-auto mb-2">
-                  <h4 className="font-bold text-stone-900 text-base">
-                    {lang === 'am' ? 'የመክፈያ ዘዴዎን ይምረጡ' : 'Select Local Payment Method'}
-                  </h4>
-                  <p className="text-xs text-stone-500">
-                    {lang === 'am'
-                      ? 'ክፍያዎ በGuzoTribe ዋስትና የተያዘ ሲሆን ጉዞው እስኪረጋገጥ ድረስ በጥንቃቄ ይጠበቃል።'
-                      : '100% Escrow protected. Payment released only when trip departure is confirmed.'}
-                  </p>
-                </div>
+                {/* Single vs Group Split Pay Toggle */}
+                {ticketCount > 1 && (
+                  <div className="flex p-1 rounded-2xl bg-stone-100 border border-stone-200 text-xs font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setSplitMode(false)}
+                      className={`flex-1 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        !splitMode
+                          ? 'bg-white text-emerald-950 shadow-xs'
+                          : 'text-stone-500 hover:text-stone-900'
+                      }`}
+                    >
+                      <Lock className="w-3.5 h-3.5 text-emerald-700" />
+                      <span>{lang === 'am' ? 'ሁሉንም በአንድ ጊዜ ክፈል' : 'Pay Full Amount (100%)'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSplitMode(true)}
+                      className={`flex-1 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        splitMode
+                          ? 'bg-emerald-700 text-white shadow-xs'
+                          : 'text-stone-500 hover:text-stone-900'
+                      }`}
+                    >
+                      <Users className="w-3.5 h-3.5 text-amber-300" />
+                      <span>{lang === 'am' ? 'ለጓደኞች አካፍል (Split Pay)' : 'Split with Friends (Crew Link)'}</span>
+                    </button>
+                  </div>
+                )}
+
+                {splitMode ? (
+                  <div className="p-5 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 text-center space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-700 text-white flex items-center justify-center mx-auto shadow-md">
+                      <Users className="w-6 h-6 text-amber-300" />
+                    </div>
+                    <div>
+                      <h5 className="font-extrabold text-stone-900 text-base">
+                        {lang === 'am' ? 'የቡድን ክፍያ ሊንክ ያመንጩ' : 'Lock Coaster Seats & Share Group Link'}
+                      </h5>
+                      <p className="text-xs text-stone-600 max-w-md mx-auto mt-1 leading-relaxed">
+                        {lang === 'am'
+                          ? `እርስዎ እና ${ticketCount - 1} ጓደኞችዎ ለእያንዳንዳችሁ ${formatPrice(Math.round(finalTotal / ticketCount))} በቴሌብር ወይም በCBE በ60 ደቂቃ ውስጥ ትከፍላላችሁ።`
+                          : `Locks your ${ticketCount} selected seats (${selectedSeats.join(', ')}) for 60 minutes. Each hiker pays their individual share of ${formatPrice(Math.round(finalTotal / ticketCount))} via Telebirr or CBE Birr.`}
+                      </p>
+                    </div>
+
+                    <div className="p-3 bg-white rounded-2xl border border-emerald-200 text-left space-y-1 text-xs">
+                      <div className="flex justify-between font-bold text-stone-800">
+                        <span>Per-Person Share:</span>
+                        <span className="text-emerald-800 font-mono font-black">{formatPrice(Math.round(finalTotal / ticketCount))}</span>
+                      </div>
+                      <div className="flex justify-between text-stone-500 text-[11px]">
+                        <span>Locked Seats:</span>
+                        <span className="font-mono font-bold text-stone-700">{selectedSeats.join(', ')}</span>
+                      </div>
+                      <div className="flex justify-between text-stone-500 text-[11px]">
+                        <span>Pickup Hub:</span>
+                        <span>{currentPickupStation.name} ({currentPickupStation.time})</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const splitId = `${trip.id}-crew-${Math.floor(1000 + Math.random() * 9000)}`;
+                          onClose();
+                          navigate(`/group-pay/${splitId}`);
+                        }}
+                        className="w-full py-3.5 px-4 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-950/20 transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
+                      >
+                        <Users className="w-4 h-4 text-amber-300" />
+                        <span>{lang === 'am' ? 'የቡድን ክፍያ ሊንክ ክፈትና ጀምር' : 'Lock Seats & Launch Group Pay Link'}</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-center max-w-sm mx-auto mb-2">
+                      <h4 className="font-bold text-stone-900 text-base">
+                        {lang === 'am' ? 'የመክፈያ ዘዴዎን ይምረጡ' : 'Select Local Payment Method'}
+                      </h4>
+                      <p className="text-xs text-stone-500">
+                        {lang === 'am'
+                          ? 'ክፍያዎ በGuzoTribe ዋስትና የተያዘ ሲሆን ጉዞው እስኪረጋገጥ ድረስ በጥንቃቄ ይጠበቃል።'
+                          : '100% Escrow protected. Payment released only when trip departure is confirmed.'}
+                      </p>
+                    </div>
 
                 {/* Payment Methods Options */}
                 <div className="space-y-2.5">
@@ -576,38 +658,40 @@ export default function BookingModal({
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center justify-between pt-3 border-t border-stone-200">
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs font-bold transition-all cursor-pointer"
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    <span>{lang === 'am' ? 'ተመለስ' : 'Back'}</span>
-                  </button>
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between pt-3 border-t border-stone-200">
+                      <button
+                        type="button"
+                        onClick={() => setStep(2)}
+                        className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs font-bold transition-all cursor-pointer"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>{lang === 'am' ? 'ተመለስ' : 'Back'}</span>
+                      </button>
 
-                  <button
-                    type="button"
-                    disabled={isProcessing}
-                    onClick={handleConfirmPayment}
-                    className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-7 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 transition-all hover:scale-[1.02] cursor-pointer disabled:opacity-50"
-                  >
-                    {isProcessing ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>{lang === 'am' ? 'ክፍያው እየተረጋገጠ ነው...' : 'Verifying Payment...'}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="w-4 h-4" />
-                        <span>
-                          {lang === 'am' ? `${formatPrice(finalTotal)} ይክፈሉ` : `Pay ${formatPrice(finalTotal)}`}
-                        </span>
-                      </>
-                    )}
-                  </button>
-                </div>
+                      <button
+                        type="button"
+                        disabled={isProcessing}
+                        onClick={handleConfirmPayment}
+                        className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-7 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 transition-all hover:scale-[1.02] cursor-pointer disabled:opacity-50"
+                      >
+                        {isProcessing ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>{lang === 'am' ? 'ክፍያው እየተረጋገጠ ነው...' : 'Verifying Payment...'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="w-4 h-4" />
+                            <span>
+                              {lang === 'am' ? `${formatPrice(finalTotal)} ይክፈሉ` : `Pay ${formatPrice(finalTotal)}`}
+                            </span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </>
+                )}
 
               </div>
             )}
