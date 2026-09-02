@@ -20,6 +20,7 @@ import {
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import GuzoLogo from './GuzoLogo';
+import DataSourceToggle from './DataSourceToggle';
 
 export default function Navbar({ 
   currency, 
@@ -236,6 +237,9 @@ export default function Navbar({
                 </span>
               </button>
             )}
+
+            {/* Data Mode Switch (Mock vs Backend API) */}
+            <DataSourceToggle />
 
             {/* Currency Selector */}
             <div className="flex items-center bg-stone-100 p-0.5 sm:p-1 rounded-xl border border-stone-200 text-[11px] sm:text-xs font-semibold">
@@ -479,6 +483,11 @@ export default function Navbar({
             >
               <span>📞 Contact Desk</span>
             </Link>
+          </div>
+
+          <div className="pt-2 border-t border-stone-100 flex items-center justify-between px-1">
+            <span className="text-xs font-bold text-stone-500">Data Source:</span>
+            <DataSourceToggle />
           </div>
 
           <div className="pt-2 border-t border-stone-100 grid grid-cols-2 gap-2">

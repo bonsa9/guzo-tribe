@@ -31,6 +31,7 @@ import { tripsData as initialTripsData } from './data/tripsData';
 import { TelegramWebApp } from './bot/tmaSdk';
 
 import { ToastProvider, useToast } from './context/ToastContext';
+import { DataSourceProvider } from './context/DataSourceContext';
 import { AuthProvider } from './context/AuthContext';
 import { AbilityProvider } from './context/AbilityContext';
 
@@ -390,11 +391,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <AuthProvider>
-          <AbilityProvider>
-            <MainContent />
-          </AbilityProvider>
-        </AuthProvider>
+        <DataSourceProvider>
+          <AuthProvider>
+            <AbilityProvider>
+              <MainContent />
+            </AbilityProvider>
+          </AuthProvider>
+        </DataSourceProvider>
       </ToastProvider>
     </BrowserRouter>
   );
