@@ -43,6 +43,10 @@ export class GroupSplitService {
       amountPerPerson: dto.amountPerPerson,
       totalAmount: dto.amountPerPerson * dto.seats.length,
       expiresAt,
+      paidCount: 1,
+      totalCount: dto.seats.length,
+      progressPercent: Math.round((1 / dto.seats.length) * 100),
+      isFullyPaid: false,
       members,
       status: 'active',
       createdAt: new Date().toISOString()

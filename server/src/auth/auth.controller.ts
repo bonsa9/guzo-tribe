@@ -1,6 +1,15 @@
 import { Controller, Post, Get, Body, Headers } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService, RegisterDto, LoginDto } from './auth.service';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { AuthService } from './auth.service';
+import { 
+  RegisterDto, 
+  LoginDto, 
+  SendOtpDto, 
+  SendOtpResponseDto, 
+  VerifyOtpDto, 
+  AuthResponseDto, 
+  UserProfileResponseDto 
+} from './dto/auth.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -9,9 +18,10 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new traveler or tour operator account' })
-  @ApiResponse({ status: 201, description: 'Account registered and token issued' })
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({ status: 201, description: 'Account registered and token issued', type: AuthResponseDto })
   @ApiResponse({ status: 400, description: 'Validation error or existing phone/email' })
-  async register(@Body() dto: RegisterDto) {
+  async register(@Body() dto: RegisterDto): Promise<AuthResponseDto> {
     const data = await this.authService.register(dto);
     return {
       success: true,
@@ -22,9 +32,10 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Login using phone or email and password' })
-  @ApiResponse({ status: 200, description: 'Authenticated successfully' })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({ status: 200, description: 'Authenticated successfully', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  async login(@Body() dto: LoginDto) {
+  async login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
     const data = await this.authService.login(dto);
     return {
       success: true,
@@ -35,17 +46,19 @@ export class AuthController {
 
   @Post('send-otp')
   @ApiOperation({ summary: 'Send 4-digit SMS OTP to an Ethiopian phone number' })
-  @ApiResponse({ status: 200, description: 'SMS OTP dispatched (Test code: 8492)' })
-  async sendOtp(@Body('phone') phone: string) {
-    return await this.authService.sendOtp(phone || '+251 911 482910');
+  @ApiBody({ type: SendOtpDto })
+  @ApiResponse({ status: 200, description: 'SMS OTP dispatched (Test code: 8492)', type: SendOtpResponseDto })
+  async sendOtp(@Body() body: SendOtpDto): Promise<SendOtpResponseDto> {
+    return await this.authService.sendOtp(body.phone || '+251 911 482910');
   }
 
   @Post('verify-otp')
   @ApiOperation({ summary: 'Verify SMS OTP code and auto-authenticate traveler' })
-  @ApiResponse({ status: 201, description: 'OTP verified, session token issued' })
+  @ApiBody({ type: VerifyOtpDto })
+  @ApiResponse({ status: 201, description: 'OTP verified, session token issued', type: AuthResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid or expired OTP code' })
-  async verifyOtp(@Body('phone') phone: string, @Body('code') code: string) {
-    const data = await this.authService.verifyOtp(phone, code);
+  async verifyOtp(@Body() body: VerifyOtpDto): Promise<AuthResponseDto> {
+    const data = await this.authService.verifyOtp(body.phone, body.code);
     return {
       success: true,
       message: 'Phone verified and authenticated',
@@ -56,8 +69,8 @@ export class AuthController {
   @Get('me')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Fetch currently authenticated profile via Bearer session token' })
-  @ApiResponse({ status: 200, description: 'User profile with role permissions' })
-  async getMe(@Headers('authorization') authHeader?: string) {
+  @ApiResponse({ status: 200, description: 'User profile with role permissions', type: UserProfileResponseDto })
+  async getMe(@Headers('authorization') authHeader?: string): Promise<UserProfileResponseDto> {
     let userId: string | undefined;
     if (authHeader && authHeader.startsWith('Bearer gz_tok_')) {
       const parts = authHeader.split('_');

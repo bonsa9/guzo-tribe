@@ -1,19 +1,7 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 
-export interface CreateBookingDto {
-  tripId: string;
-  passengerName: string;
-  passengerPhone: string;
-  telegramHandle?: string;
-  emergencyContact?: string;
-  ticketCount: number;
-  seats: string[]; // e.g. ['2A', '2B']
-  pickupStationId: string;
-  pickupStationName: string;
-  paymentMethod: 'telebirr' | 'cbe' | 'chapa';
-  amountETB: number;
-}
+import { CreateBookingDto } from './dto/bookings.dto';
 
 @Injectable()
 export class BookingsService {

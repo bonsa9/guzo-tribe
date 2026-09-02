@@ -1,19 +1,7 @@
 import { Injectable, BadRequestException, UnauthorizedException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 
-export interface RegisterDto {
-  name: string;
-  phone: string;
-  email?: string;
-  password?: string;
-  role?: 'traveler' | 'host' | 'admin';
-  city?: string;
-}
-
-export interface LoginDto {
-  identifier: string; // phone or email
-  password?: string;
-}
+import { RegisterDto, LoginDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
