@@ -20,6 +20,9 @@ import GearGuidePage from './pages/GearGuidePage';
 import CommunityPage from './pages/CommunityPage';
 import TripDetailPage from './pages/TripDetailPage';
 import GroupSplitPayPage from './pages/GroupSplitPayPage';
+import MyBookingsPage from './pages/MyBookingsPage';
+import MountainWeatherRadarPage from './pages/MountainWeatherRadarPage';
+import TourismCheckpointManifestPage from './pages/TourismCheckpointManifestPage';
 import ComparisonDrawer from './components/ComparisonDrawer';
 import TripDetailModal from './components/TripDetailModal';
 import BookingModal from './components/BookingModal';
@@ -304,6 +307,18 @@ function MainContent() {
           <Route
             path="/group-pay/:splitId"
             element={<GroupSplitPayPage lang={lang} currency={currency} />}
+          />
+          <Route
+            path="/my-bookings"
+            element={<MyBookingsPage lang={lang} currency={currency} />}
+          />
+          <Route
+            path="/radar"
+            element={<MountainWeatherRadarPage lang={lang} currency={currency} />}
+          />
+          <Route
+            path="/manifest/:tripId"
+            element={<TourismCheckpointManifestPage lang={lang} currency={currency} />}
           />
         </Routes>
       </main>

@@ -810,20 +810,31 @@ export default function BookingModal({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2 max-w-md mx-auto">
+                <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2 max-w-lg mx-auto">
                   <button
                     onClick={() => setIsPrintModalOpen(true)}
                     className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition-all cursor-pointer shadow-md"
                   >
                     <Printer className="w-4 h-4 text-amber-300" />
-                    <span>{lang === 'am' ? 'ትኬት አትም (Print Boarding Pass)' : 'Print Official Boarding Pass'}</span>
+                    <span>{lang === 'am' ? 'ትኬት አትም' : 'Print Boarding Pass'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      handleResetAndClose();
+                      navigate('/my-bookings');
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold transition-all cursor-pointer shadow-md"
+                  >
+                    <Bus className="w-4 h-4 text-amber-300" />
+                    <span>{lang === 'am' ? 'የእኔ ጉዞዎች (My Bookings)' : 'View in My Bookings'}</span>
                   </button>
 
                   <button
                     onClick={handleResetAndClose}
-                    className="px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-md transition-all cursor-pointer"
+                    className="px-5 py-3 rounded-xl border border-stone-300 hover:bg-stone-100 text-stone-700 text-xs font-bold transition-all cursor-pointer"
                   >
-                    {lang === 'am' ? 'ጨርስ (Done)' : 'Done'}
+                    {lang === 'am' ? 'ጨርስ' : 'Done'}
                   </button>
                 </div>
 

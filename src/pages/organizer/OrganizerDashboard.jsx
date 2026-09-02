@@ -4,11 +4,9 @@ import {
   DollarSign, 
   Star, 
   Plus, 
-  ShieldCheck, 
   FileText, 
   CreditCard, 
   TrendingUp, 
-  Bus, 
   CheckCircle2, 
   Sparkles, 
   Menu, 
@@ -16,6 +14,7 @@ import {
   Check 
 } from 'lucide-react';
 import { sampleBookings } from '../../data/bookingsData';
+import { Link } from 'react-router-dom';
 import CreateTripModal from './CreateTripModal';
 import PassengerManifestModal from './PassengerManifestModal';
 import PayoutModal from './PayoutModal';
@@ -415,13 +414,22 @@ export default function OrganizerDashboard({ trips, onTripCreated, lang }) {
                 searchPlaceholder="Search passenger by name, #Ref, destination, or phone..."
                 exportFileName="GuzoTribe_Passenger_Manifest"
                 actions={
-                  <button
-                    onClick={() => window.print()}
-                    className="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-                  >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>Print Manifest</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to="/manifest/wenchi-crater-lake-day-hike"
+                      className="px-3.5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Official MoT Clearance Sheet</span>
+                    </Link>
+                    <button
+                      onClick={() => window.print()}
+                      className="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>Print Raw Table</span>
+                    </button>
+                  </div>
                 }
               />
             </div>

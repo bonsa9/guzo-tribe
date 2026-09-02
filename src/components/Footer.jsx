@@ -1,5 +1,5 @@
 import React from 'react';
-import { Send, Phone, Mail, MapPin, ShieldCheck, LayoutDashboard, Map, Camera, CheckSquare } from 'lucide-react';
+import { Send, Phone, Mail, MapPin, ShieldCheck, LayoutDashboard, Map, CheckSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GuzoLogo from './GuzoLogo';
 
@@ -53,9 +53,10 @@ export default function Footer({ lang, onOpenPartnerModal: _onOpenPartnerModal }
             </h4>
             <ul className="space-y-2.5 text-xs text-stone-400">
               <li><Link to="/trips" className="hover:text-white transition-colors">{lang === 'am' ? 'ሁሉንም ጉዞዎች እይ' : 'All Curated Trips'}</Link></li>
-              <li><Link to="/map" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1.5"><Map className="w-3.5 h-3.5" /><span>Ethiopia Landmark Map</span></Link></li>
-              <li><Link to="/gear-guide" className="text-amber-400 hover:text-amber-300 font-semibold transition-colors flex items-center gap-1.5"><CheckSquare className="w-3.5 h-3.5" /><span>Trek Gear & Packing Guide</span></Link></li>
-              <li><Link to="/community" className="text-sky-400 hover:text-sky-300 font-semibold transition-colors flex items-center gap-1.5"><Camera className="w-3.5 h-3.5" /><span>Community Trail Stories</span></Link></li>
+              <li><Link to="/radar" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1.5"><Map className="w-3.5 h-3.5" /><span>Mountain Weather Radar</span></Link></li>
+              <li><Link to="/map" className="hover:text-stone-300 transition-colors flex items-center gap-1.5"><Map className="w-3.5 h-3.5 text-stone-500" /><span>Ethiopia Landmark Map</span></Link></li>
+              <li><Link to="/gear-guide" className="hover:text-stone-300 transition-colors flex items-center gap-1.5"><CheckSquare className="w-3.5 h-3.5 text-amber-500" /><span>Trek Gear & Packing Guide</span></Link></li>
+              <li><Link to="/manifest/wenchi-crater-lake-day-hike" className="text-stone-400 hover:text-stone-200 transition-colors flex items-center gap-1.5"><span>MoT Highway Manifest</span></Link></li>
             </ul>
           </div>
 

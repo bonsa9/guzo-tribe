@@ -13,7 +13,9 @@ import {
   LogOut,
   QrCode,
   ChevronDown,
-  CheckSquare
+  CheckSquare,
+  Bus,
+  Mountain
 } from 'lucide-react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -128,6 +130,20 @@ export default function Navbar({
                     onClick={() => setIsMoreDropdownOpen(false)}
                     className="absolute left-0 mt-2 w-52 bg-white/95 backdrop-blur-xl rounded-2xl border border-stone-200 shadow-xl p-1.5 space-y-0.5 text-xs animate-slide-up z-50"
                   >
+                    <NavLink
+                      to="/radar"
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all font-semibold ${
+                          isActive
+                            ? 'bg-emerald-50 text-emerald-900 font-bold'
+                            : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                        }`
+                      }
+                    >
+                      <Mountain className="w-4 h-4 text-emerald-700" />
+                      <span>{lang === 'am' ? 'የተራራ ራዳር' : 'Trail Weather Radar'}</span>
+                    </NavLink>
+
                     <NavLink
                       to="/gear-guide"
                       className={({ isActive }) =>
@@ -288,6 +304,14 @@ export default function Navbar({
                     </div>
 
                     <Link
+                      to="/my-bookings"
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 font-semibold transition-all"
+                    >
+                      <Bus className="w-4 h-4 text-emerald-700" />
+                      <span>My Coaster Bookings</span>
+                    </Link>
+
+                    <Link
                       to="/profile"
                       className="flex items-center gap-2 px-3 py-2 rounded-xl text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 font-semibold transition-all"
                     >
@@ -404,6 +428,26 @@ export default function Navbar({
               }`}
             >
               <span>📸 Community Feed</span>
+            </Link>
+
+            <Link
+              to="/my-bookings"
+              onClick={closeMobileMenu}
+              className={`p-3 rounded-2xl border flex items-center gap-2 ${
+                location.pathname === '/my-bookings' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-stone-50 border-stone-200 text-stone-700'
+              }`}
+            >
+              <span>🚌 My Coaster Bookings</span>
+            </Link>
+
+            <Link
+              to="/radar"
+              onClick={closeMobileMenu}
+              className={`p-3 rounded-2xl border flex items-center gap-2 ${
+                location.pathname === '/radar' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-stone-50 border-stone-200 text-stone-700'
+              }`}
+            >
+              <span>🏔️ Mountain Trail Radar</span>
             </Link>
 
             <Link
