@@ -1,9 +1,9 @@
 import React from 'react';
-import { 
-  X, 
-  Printer, 
-  QrCode, 
-  MapPin 
+import {
+  X,
+  Printer,
+  QrCode,
+  MapPin
 } from 'lucide-react';
 
 export default function PrintableTicketModal({
@@ -21,7 +21,7 @@ export default function PrintableTicketModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
       <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl animate-slide-up relative text-stone-800">
-        
+
         {/* Modal Action Bar */}
         <div className="flex items-center justify-between border-b border-stone-200 pb-3 no-print">
           <div className="flex items-center gap-2">
@@ -51,7 +51,7 @@ export default function PrintableTicketModal({
 
         {/* Printable Boarding Pass Frame */}
         <div className="border-2 border-dashed border-stone-300 rounded-3xl p-6 sm:p-7 space-y-5 bg-gradient-to-b from-stone-50 to-white relative overflow-hidden">
-          
+
           {/* Top Brand & Security Header */}
           <div className="flex items-start justify-between border-b border-stone-200 pb-4">
             <div>

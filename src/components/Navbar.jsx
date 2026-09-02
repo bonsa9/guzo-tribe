@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { 
   Compass, 
   Globe, 
-  Sparkles, 
   Heart, 
   LayoutDashboard, 
   Menu, 
   X, 
   Phone, 
-  Info, 
   Users, 
   Layers, 
   ShieldCheck,
@@ -16,8 +14,6 @@ import {
   LogOut,
   QrCode,
   ChevronDown,
-  MapPin,
-  Camera,
   CheckSquare
 } from 'lucide-react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
@@ -40,13 +36,15 @@ export default function Navbar({
   const { user, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const isMoreActive = ['/gear-guide', '/partners', '/contact', '/admin'].includes(location.pathname);
 
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-stone-200/80 transition-all shadow-xs tibeb-border-top">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+      <div className="max-w-7xl xl:max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
           
           {/* Brand Logo & Ethiopian Flag Motif */}
           <Link to="/" onClick={closeMobileMenu} className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0">
@@ -70,12 +68,12 @@ export default function Navbar({
             </div>
           </Link>
 
-          {/* Clean Public Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1 text-xs lg:text-sm font-semibold text-stone-600">
+          {/* Clean Streamlined Desktop Nav Links */}
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-xs xl:text-sm font-semibold text-stone-600 shrink-0">
             <NavLink 
               to="/" 
               className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
+                `px-3 py-1.5 rounded-xl transition-all whitespace-nowrap ${
                   isActive 
                     ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
                     : 'hover:text-stone-900 hover:bg-stone-100/70'
@@ -88,7 +86,7 @@ export default function Navbar({
             <NavLink 
               to="/trips" 
               className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
+                `px-3 py-1.5 rounded-xl transition-all whitespace-nowrap ${
                   isActive 
                     ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
                     : 'hover:text-stone-900 hover:bg-stone-100/70'
@@ -101,7 +99,7 @@ export default function Navbar({
             <NavLink 
               to="/map" 
               className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
+                `px-3 py-1.5 rounded-xl transition-all whitespace-nowrap ${
                   isActive 
                     ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
                     : 'hover:text-stone-900 hover:bg-stone-100/70'
@@ -112,22 +110,9 @@ export default function Navbar({
             </NavLink>
 
             <NavLink 
-              to="/gear-guide" 
-              className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
-                  isActive 
-                    ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
-                    : 'hover:text-stone-900 hover:bg-stone-100/70'
-                }`
-              }
-            >
-              {lang === 'am' ? 'የእቃ ዝርዝር' : 'Gear Guide'}
-            </NavLink>
-
-            <NavLink 
               to="/community" 
               className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
+                `px-3 py-1.5 rounded-xl transition-all whitespace-nowrap ${
                   isActive 
                     ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
                     : 'hover:text-stone-900 hover:bg-stone-100/70'
@@ -137,39 +122,99 @@ export default function Navbar({
               {lang === 'am' ? 'ማህበረሰብ' : 'Community'}
             </NavLink>
 
-            <NavLink 
-              to="/partners" 
-              className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
-                  isActive 
-                    ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
+            {/* More Dropdown (Secondary Features) */}
+            <div className="relative">
+              <button
+                onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                  isMoreActive
+                    ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs'
                     : 'hover:text-stone-900 hover:bg-stone-100/70'
-                }`
-              }
-            >
-              {lang === 'am' ? 'አስጎብኚ ይሁኑ' : 'Partner with Us'}
-            </NavLink>
+                }`}
+              >
+                <span>{lang === 'am' ? 'ተጨማሪ' : 'More'}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isMoreDropdownOpen ? 'rotate-180 text-emerald-700' : 'text-stone-400'}`} />
+              </button>
 
-            <NavLink 
-              to="/contact" 
-              className={({ isActive }) => 
-                `px-3 py-1.5 rounded-xl transition-all ${
-                  isActive 
-                    ? 'text-emerald-800 bg-emerald-50/80 font-bold border border-emerald-200/70 shadow-2xs' 
-                    : 'hover:text-stone-900 hover:bg-stone-100/70'
-                }`
-              }
-            >
-              {lang === 'am' ? 'ያግኙን' : 'Contact'}
-            </NavLink>
+              {isMoreDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsMoreDropdownOpen(false)}
+                  />
+                  <div
+                    onClick={() => setIsMoreDropdownOpen(false)}
+                    className="absolute left-0 mt-2 w-52 bg-white/95 backdrop-blur-xl rounded-2xl border border-stone-200 shadow-xl p-1.5 space-y-0.5 text-xs animate-slide-up z-50"
+                  >
+                    <NavLink
+                      to="/gear-guide"
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all font-semibold ${
+                          isActive
+                            ? 'bg-emerald-50 text-emerald-900 font-bold'
+                            : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                        }`
+                      }
+                    >
+                      <CheckSquare className="w-4 h-4 text-amber-500" />
+                      <span>{lang === 'am' ? 'የእቃ ዝርዝር' : 'Gear Guide'}</span>
+                    </NavLink>
 
-            <span className="w-px h-5 bg-stone-200 mx-1" />
+                    <NavLink
+                      to="/partners"
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all font-semibold ${
+                          isActive
+                            ? 'bg-emerald-50 text-emerald-900 font-bold'
+                            : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                        }`
+                      }
+                    >
+                      <Users className="w-4 h-4 text-emerald-600" />
+                      <span>{lang === 'am' ? 'አስጎብኚ ይሁኑ' : 'Partner with Us'}</span>
+                    </NavLink>
+
+                    <NavLink
+                      to="/contact"
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all font-semibold ${
+                          isActive
+                            ? 'bg-emerald-50 text-emerald-900 font-bold'
+                            : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                        }`
+                      }
+                    >
+                      <Phone className="w-4 h-4 text-sky-600" />
+                      <span>{lang === 'am' ? 'ያግኙን' : 'Contact Support'}</span>
+                    </NavLink>
+
+                    <div className="pt-1 mt-1 border-t border-stone-100">
+                      <NavLink
+                        to="/admin"
+                        className={({ isActive }) =>
+                          `flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all font-semibold ${
+                            isActive
+                              ? 'bg-emerald-800 text-white font-bold'
+                              : 'text-stone-600 hover:bg-emerald-50 hover:text-emerald-900'
+                          }`
+                        }
+                      >
+                        <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                        <span>{lang === 'am' ? 'የአድሚን ገጽ' : 'Admin Console'}</span>
+                      </NavLink>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <span className="w-px h-5 bg-stone-200 mx-1 shrink-0" />
 
             {/* Host Portal Link */}
             <NavLink 
               to="/organizer/dashboard" 
               className={({ isActive }) => 
-                `flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all text-xs font-bold ${
+                `flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all text-xs font-bold whitespace-nowrap ${
                   isActive 
                     ? 'bg-stone-900 text-white shadow-xs' 
                     : 'text-stone-700 hover:text-stone-900 hover:bg-stone-100'
@@ -180,26 +225,10 @@ export default function Navbar({
               <LayoutDashboard className="w-3.5 h-3.5 text-amber-500" />
               <span>Host</span>
             </NavLink>
-
-            {/* Admin Portal Link */}
-            <NavLink 
-              to="/admin" 
-              className={({ isActive }) => 
-                `flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-extrabold transition-all ${
-                  isActive 
-                    ? 'bg-emerald-800 text-white border-emerald-700 shadow-xs' 
-                    : 'bg-emerald-950/80 border-emerald-700/80 text-emerald-300 hover:bg-emerald-900 hover:text-white'
-                }`
-              }
-              title="Platform Master Admin"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
-              <span>Admin</span>
-            </NavLink>
           </nav>
 
           {/* Action Tools */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
             {/* Wishlist Pill */}
             {wishlistCount > 0 && (

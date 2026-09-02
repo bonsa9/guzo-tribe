@@ -179,7 +179,7 @@ export default function TripDetailPage({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`pb-3.5 px-2 text-xs sm:text-sm font-bold transition-all cursor-pointer shrink-0 relative ${
+                  className={`pb-3.5 px-2 text-xs sm:text-sm font-bold transition-all cursor-pointer shrink-0 relative whitespace-nowrap ${
                     isActive
                       ? 'text-emerald-800'
                       : 'text-stone-500 hover:text-stone-900'
