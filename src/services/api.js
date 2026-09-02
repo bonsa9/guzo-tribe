@@ -8,11 +8,21 @@ import { tripsData as fallbackTrips } from '../data/tripsData';
 
 const BASE_URL = '/api';
 
+function getToken() {
+  try {
+    return localStorage.getItem('guzotribe_token');
+  } catch {
+    return null;
+  }
+}
+
 async function request(endpoint, options = {}) {
   try {
+    const token = getToken();
     const res = await fetch(`${BASE_URL}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...options.headers
       },
       ...options
@@ -31,6 +41,57 @@ async function request(endpoint, options = {}) {
 }
 
 export const api = {
+  // Authentication
+  async register(data) {
+    const res = await request('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+    if (res.data?.token) {
+      localStorage.setItem('guzotribe_token', res.data.token);
+    }
+    return res.data;
+  },
+
+  async login(credentials) {
+    const res = await request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    });
+    if (res.data?.token) {
+      localStorage.setItem('guzotribe_token', res.data.token);
+    }
+    return res.data;
+  },
+
+  async sendOtp(phone) {
+    return await request('/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify({ phone })
+    });
+  },
+
+  async verifyOtp(phone, code) {
+    const res = await request('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ phone, code })
+    });
+    if (res.data?.token) {
+      localStorage.setItem('guzotribe_token', res.data.token);
+    }
+    return res.data;
+  },
+
+  async getMe() {
+    const res = await request('/auth/me');
+    return res.data;
+  },
+
+  logout() {
+    try {
+      localStorage.removeItem('guzotribe_token');
+    } catch {}
+  },
   // Trips
   async getTrips(params = {}) {
     try {

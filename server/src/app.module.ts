@@ -5,10 +5,12 @@ import { BookingsModule } from './bookings/bookings.module';
 import { GroupSplitModule } from './group-split/group-split.module';
 import { EscrowModule } from './escrow/escrow.module';
 import { ManifestModule } from './manifest/manifest.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    AuthModule,
     TripsModule,
     BookingsModule,
     GroupSplitModule,

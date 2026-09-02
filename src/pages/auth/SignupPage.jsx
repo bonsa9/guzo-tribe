@@ -3,11 +3,7 @@ import {
   ShieldCheck, 
   Users, 
   Building, 
-  ArrowRight, 
-  CheckCircle2, 
-  Smartphone, 
-  Mail, 
-  Lock 
+  ArrowRight 
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -29,22 +25,26 @@ export default function SignupPage({ lang }) {
     licenseNumber: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newUser = register({
-      ...formData,
-      role
-    });
-    addToast(
-      lang === 'am'
-        ? `እንኳን ደህና መጡ ${newUser.name}! መለያዎ በተሳካ ሁኔታ ተፈጥሯል።`
-        : `Welcome to GuzoTribe, ${newUser.name}! Account registered successfully.`,
-      'success'
-    );
-    if (role === 'host') {
-      navigate('/organizer/dashboard');
-    } else {
-      navigate('/profile');
+    try {
+      const newUser = await register({
+        ...formData,
+        role
+      });
+      addToast(
+        lang === 'am'
+          ? `እንኳን ደህና መጡ ${newUser.name}! መለያዎ በተሳካ ሁኔታ ተፈጥሯል።`
+          : `Welcome to GuzoTribe, ${newUser.name}! Account registered successfully.`,
+        'success'
+      );
+      if (role === 'host') {
+        navigate('/organizer/dashboard');
+      } else {
+        navigate('/profile');
+      }
+    } catch (err) {
+      addToast(err.message || 'Registration failed', 'error');
     }
   };
 

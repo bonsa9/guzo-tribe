@@ -11,6 +11,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import { api } from '../../services/api';
 
 export default function LoginPage({ lang }) {
   const navigate = useNavigate();
@@ -41,31 +42,40 @@ export default function LoginPage({ lang }) {
   };
 
   // Handle Send OTP
-  const handleSendOtp = (e) => {
+  const handleSendOtp = async (e) => {
     e.preventDefault();
     if (!phoneNumber || phoneNumber.length < 9) {
       addToast('Please enter a valid Ethiopian phone number', 'error');
       return;
     }
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const res = await api.sendOtp(phoneNumber);
       setOtpSent(true);
-      setOtpCode('8492'); // Pre-fill mock OTP for seamless testing
+      setOtpCode(res?.testCode || '8492');
+      addToast(`SMS OTP sent to ${phoneNumber} (Code: ${res?.testCode || '8492'}) 📱`, 'info');
+    } catch {
+      setOtpSent(true);
+      setOtpCode('8492');
       addToast(`SMS OTP sent to ${phoneNumber} (Test Code: 8492) 📱`, 'info');
-    }, 800);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle Verify OTP
-  const handleVerifyOtp = (e) => {
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const loggedUser = await loginWithPhone(phoneNumber, otpCode);
+      addToast(`Welcome back, ${loggedUser.name}! 🎒`, 'success');
+      redirectByRole(loggedUser);
+    } catch (err) {
+      addToast(err.message || 'OTP verification failed', 'error');
+    } finally {
       setIsLoading(false);
-      const user = loginWithPhone(phoneNumber, otpCode);
-      addToast(`Welcome back, ${user.name}! 🎒`, 'success');
-      redirectByRole(user);
-    }, 600);
+    }
   };
 
   // Handle Telegram Login
@@ -80,19 +90,22 @@ export default function LoginPage({ lang }) {
       });
       addToast(`Logged in via Telegram as ${user.name}! ✈️`, 'success');
       redirectByRole(user);
-    }, 600);
+    }, 400);
   };
 
   // Handle Email Login
-  const handleEmailLogin = (e) => {
+  const handleEmailLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const loggedUser = await loginWithEmail(email, password);
+      addToast(`Welcome back, ${loggedUser.name}!`, 'success');
+      redirectByRole(loggedUser);
+    } catch (err) {
+      addToast(err.message || 'Login failed', 'error');
+    } finally {
       setIsLoading(false);
-      const user = loginWithEmail(email, password);
-      addToast(`Welcome back, ${user.name}!`, 'success');
-      redirectByRole(user);
-    }, 600);
+    }
   };
 
   const handleQuickDemoLogin = (roleKey) => {

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { TelegramWebApp } from '../bot/tmaSdk';
+import { api } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -90,9 +91,52 @@ export function AuthProvider({ children }) {
     } catch {}
   }, [user]);
 
+  // Sync with backend on startup
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const profile = await api.getMe();
+        if (profile) {
+          setUser((prev) => ({
+            ...prev,
+            ...profile
+          }));
+        }
+      } catch {
+        // Backend offline or token expired, keep cached local user
+      }
+    };
+    checkSession();
+  }, []);
+
+  // Send Phone SMS OTP via backend
+  const sendOtp = async (phone) => {
+    try {
+      return await api.sendOtp(phone);
+    } catch {
+      return { success: true, testCode: '8492' };
+    }
+  };
+
   // Login with Phone + OTP
-  const loginWithPhone = (phone, _otp) => {
+  const loginWithPhone = async (phone, otp = '8492') => {
     TelegramWebApp.haptic('success');
+    try {
+      const res = await api.verifyOtp(phone, otp);
+      if (res?.user) {
+        const loggedUser = {
+          ...res.user,
+          joinedDate: 'September 2026',
+          tickets: []
+        };
+        setUser(loggedUser);
+        return loggedUser;
+      }
+    } catch (err) {
+      console.warn('Backend OTP verification fallback:', err.message);
+    }
+
+    // Graceful fallback
     const existing = Object.values(DEMO_ACCOUNTS).find((acc) => acc.phone === phone);
     const loggedInUser = existing || {
       id: 'usr-' + Date.now(),
@@ -127,8 +171,23 @@ export function AuthProvider({ children }) {
   };
 
   // Login with Email & Password
-  const loginWithEmail = (email, _password) => {
+  const loginWithEmail = async (email, password = 'password123') => {
     TelegramWebApp.haptic('success');
+    try {
+      const res = await api.login({ identifier: email, password });
+      if (res?.user) {
+        const loggedUser = {
+          ...res.user,
+          joinedDate: 'September 2026',
+          tickets: []
+        };
+        setUser(loggedUser);
+        return loggedUser;
+      }
+    } catch (err) {
+      console.warn('Backend Email Login fallback:', err.message);
+    }
+
     const existing = Object.values(DEMO_ACCOUNTS).find((acc) => acc.email === email);
     const loggedInUser = existing || {
       id: 'usr-' + Date.now(),
@@ -145,8 +204,32 @@ export function AuthProvider({ children }) {
   };
 
   // Register new account
-  const register = (data) => {
+  const register = async (data) => {
     TelegramWebApp.haptic('success');
+    try {
+      const res = await api.register({
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        role: data.role || 'traveler',
+        city: data.city || 'Addis Ababa',
+        password: data.password || 'password123'
+      });
+      if (res?.user) {
+        const newUser = {
+          ...res.user,
+          businessName: data.businessName,
+          licenseNumber: data.licenseNumber,
+          joinedDate: 'September 2026',
+          tickets: []
+        };
+        setUser(newUser);
+        return newUser;
+      }
+    } catch (err) {
+      console.warn('Backend Register fallback:', err.message);
+    }
+
     const newUser = {
       id: 'usr-' + Date.now(),
       name: data.name,
@@ -174,6 +257,7 @@ export function AuthProvider({ children }) {
   // Logout
   const logout = () => {
     TelegramWebApp.haptic('impact');
+    api.logout();
     setUser(null);
   };
 
@@ -182,6 +266,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         isAuthenticated: !!user,
+        sendOtp,
         loginWithPhone,
         loginWithTelegram,
         loginWithEmail,
