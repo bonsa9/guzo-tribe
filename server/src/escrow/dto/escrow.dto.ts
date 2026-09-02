@@ -36,6 +36,23 @@ export class ReleaseEscrowPayoutDto {
 
   @ApiProperty({ example: 12000, description: 'Gross booking revenue to be settled in ETB' })
   amountETB: number;
+
+  @ApiPropertyOptional({
+    example: 6,
+    description: 'Custom platform fee percentage (1% to 20%). If omitted, organizer configured tier is used.'
+  })
+  customFeePercent?: number;
+}
+
+export class UpdateFeeTierDto {
+  @ApiProperty({ example: 'org-muller-outdoors' })
+  organizerId: string;
+
+  @ApiProperty({ example: 6, description: 'New commission percentage (e.g. 5 for 5%, 10 for 10%)' })
+  feePercent: number;
+
+  @ApiPropertyOptional({ example: 'Pioneer Partner Tier (6%)' })
+  tierName?: string;
 }
 
 export class EscrowPayoutResponseDto {
@@ -48,10 +65,16 @@ export class EscrowPayoutResponseDto {
   @ApiProperty({ example: 12000, description: 'Gross passenger earnings in escrow' })
   grossAmountETB: number;
 
-  @ApiProperty({ example: 960, description: '8% GuzoTribe platform service fee' })
+  @ApiProperty({ example: 6, description: 'Effective platform commission percentage applied' })
+  feePercentage: number;
+
+  @ApiProperty({ example: 'Pioneer Partner Tier (6%)' })
+  tierName: string;
+
+  @ApiProperty({ example: 720, description: 'GuzoTribe platform service fee deducted' })
   platformFeeETB: number;
 
-  @ApiProperty({ example: 11040, description: 'Net settlement payout released to operator' })
+  @ApiProperty({ example: 11280, description: 'Net settlement payout released to operator' })
   netPayoutETB: number;
 
   @ApiProperty({ example: 'Telebirr Merchant Payout / CBE Direct' })
