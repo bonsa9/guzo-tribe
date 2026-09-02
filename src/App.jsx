@@ -24,7 +24,6 @@ import ComparisonDrawer from './components/ComparisonDrawer';
 import TripDetailModal from './components/TripDetailModal';
 import BookingModal from './components/BookingModal';
 import BecomePartnerModal from './components/BecomePartnerModal';
-import TelegramPreviewToggle from './components/TelegramPreviewToggle';
 import { tripsData as initialTripsData } from './data/tripsData';
 import { TelegramWebApp } from './bot/tmaSdk';
 
@@ -168,13 +167,6 @@ function MainContent() {
         compareCount={comparedTrips.length}
         onOpenCompare={() => setIsCompareModalOpen(true)}
         wishlistCount={wishlist ? wishlist.length : 0}
-      />
-
-      {/* Floating Telegram Simulator Toggle */}
-      <TelegramPreviewToggle
-        isTelegramMode={isTelegramMode}
-        setIsTelegramMode={setIsTelegramMode}
-        lang={lang}
       />
 
       {/* Page Routes */}
