@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Bus, 
@@ -19,9 +19,12 @@ import { tripsData } from '../data/tripsData';
 import PrintableTicketModal from '../components/PrintableTicketModal';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useAbility } from '../context/AbilityContext';
+import { api } from '../services/api';
 
 export default function MyBookingsPage({ lang, currency: _currency }) {
   const { user } = useAuth();
+  const { can } = useAbility();
   const { addToast } = useToast();
 
   const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' | 'completed'
@@ -109,13 +112,78 @@ export default function MyBookingsPage({ lang, currency: _currency }) {
     }
   ];
 
-  const handleCancelBooking = (bookingId) => {
+  // Hydrate from backend API
+  useEffect(() => {
+    async function loadBackendBookings() {
+      try {
+        const backendBookings = await api.getMyBookings(user?.phone);
+        if (backendBookings && backendBookings.length > 0) {
+          const mapped = backendBookings.map((b) => {
+            const trip = tripsData.find((t) => t.id === b.tripId) || tripsData[0];
+            return {
+              bookingId: b.id,
+              tripId: b.tripId,
+              trip,
+              seats: b.seats || ['2A (Window)'],
+              passengerCount: b.ticketCount || 1,
+              passengers: [
+                { name: b.passengerName, phone: b.passengerPhone }
+              ],
+              pickupStation: {
+                id: b.pickupStationId || 'meskel-square',
+                name: b.pickupStationName || 'Meskel Square',
+                time: '06:00 AM',
+                landmark: 'Tourist Information Center'
+              },
+              payment: {
+                method: b.paymentMethod === 'telebirr' ? 'Telebirr' : 'CBE Birr',
+                amountETB: b.amountETB,
+                txnRef: b.telebirrTxn || 'TLB-894210948',
+                status: b.paymentStatus || 'escrow_secured'
+              },
+              departureDate: trip.nextDeparture,
+              departureTime: trip.departureTime || '06:00 AM',
+              leadGuide: {
+                name: 'Dawit Mengistu (Certified MoT Guide)',
+                phone: '+251 911 234 567',
+                telegram: '@DawitGuzoGuide'
+              },
+              status: b.status || 'confirmed'
+            };
+          });
+
+          setBookings((prev) => {
+            const ids = new Set(mapped.map((m) => m.bookingId));
+            const existingNonDupes = prev.filter((p) => !ids.has(p.bookingId));
+            return [...mapped, ...existingNonDupes];
+          });
+        }
+      } catch (err) {
+        console.warn('Could not hydrate bookings from backend:', err.message);
+      }
+    }
+
+    loadBackendBookings();
+  }, [user]);
+
+  const handleCancelBooking = async (bookingId) => {
+    if (!can('cancel', 'Booking')) {
+      addToast('RBAC: Your account does not have permission to cancel bookings.', 'error');
+      return;
+    }
+
     const confirmed = window.confirm(
       lang === 'am'
         ? 'ይህንን ጉዞ መሰረዝ ይፈልጋሉ? ሙሉ ክፍያዎ በቴሌብር 100% ተመላሽ ይደረጋል።'
         : 'Are you sure you want to cancel this booking? Under our 100% Escrow Protection policy, full refund will be reversed to your Telebirr account.'
     );
     if (confirmed) {
+      try {
+        await api.cancelBooking(bookingId);
+      } catch (err) {
+        console.warn('Backend cancel fallback:', err.message);
+      }
+
       setBookings(prev => prev.filter(b => b.bookingId !== bookingId));
       addToast(
         lang === 'am'

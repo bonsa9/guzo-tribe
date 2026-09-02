@@ -32,6 +32,7 @@ import { TelegramWebApp } from './bot/tmaSdk';
 
 import { ToastProvider, useToast } from './context/ToastContext';
 import { AuthProvider } from './context/AuthContext';
+import { AbilityProvider } from './context/AbilityContext';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -390,7 +391,9 @@ export default function App() {
     <BrowserRouter>
       <ToastProvider>
         <AuthProvider>
-          <MainContent />
+          <AbilityProvider>
+            <MainContent />
+          </AbilityProvider>
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>

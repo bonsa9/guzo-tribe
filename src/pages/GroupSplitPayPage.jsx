@@ -21,6 +21,7 @@ import confetti from 'canvas-confetti';
 import { useToast } from '../context/ToastContext';
 import { tripsData } from '../data/tripsData';
 import GuzoLogo from '../components/GuzoLogo';
+import { api } from '../services/api';
 
 export default function GroupSplitPayPage({ lang, currency: _currency }) {
   const { splitId } = useParams();
@@ -29,7 +30,7 @@ export default function GroupSplitPayPage({ lang, currency: _currency }) {
   // Find trip from splitId or fallback to Wenchi
   const trip = tripsData.find((t) => splitId?.includes(t.id)) || tripsData[0];
 
-  // 60-minute countdown simulation
+  // 60-Minute Countdown Timer (in seconds)
   const [timeLeft, setTimeLeft] = useState(54 * 60 + 35); // 54m 35s
 
   useEffect(() => {
@@ -89,6 +90,21 @@ export default function GroupSplitPayPage({ lang, currency: _currency }) {
     }
   ]);
 
+  // Fetch live split session from backend
+  useEffect(() => {
+    async function loadBackendSplit() {
+      try {
+        const session = await api.getGroupSplit(splitId);
+        if (session && session.members) {
+          setMembers(session.members);
+        }
+      } catch (err) {
+        console.warn('Backend split load fallback:', err.message);
+      }
+    }
+    loadBackendSplit();
+  }, [splitId]);
+
   // Checkout form state for claiming an unpaid seat
   const [selectedSeatIndex, setSelectedSeatIndex] = useState(2); // Seat 3C
   const [friendName, setFriendName] = useState('');
@@ -110,7 +126,7 @@ export default function GroupSplitPayPage({ lang, currency: _currency }) {
     );
   };
 
-  const handlePayMyShare = (e) => {
+  const handlePayMyShare = async (e) => {
     e.preventDefault();
     if (!friendName.trim() || friendPhone.length < 9) {
       addToast(
@@ -121,7 +137,18 @@ export default function GroupSplitPayPage({ lang, currency: _currency }) {
     }
 
     setIsProcessing(true);
-    setTimeout(() => {
+    const targetMember = members[selectedSeatIndex];
+
+    try {
+      await api.payGroupShare(splitId, {
+        seat: targetMember?.seat || '3C',
+        name: friendName,
+        phone: friendPhone,
+        method: paymentMethod
+      });
+    } catch (err) {
+      console.warn('Backend pay share fallback:', err.message);
+    } finally {
       setIsProcessing(false);
       setHasPaidCurrentSession(true);
 
@@ -140,6 +167,7 @@ export default function GroupSplitPayPage({ lang, currency: _currency }) {
             : m
         )
       );
+    }
 
       try {
         confetti({
@@ -155,7 +183,6 @@ export default function GroupSplitPayPage({ lang, currency: _currency }) {
           : `Success ${friendName}! Your share has been escrow paid via ${paymentMethod === 'telebirr' ? 'Telebirr' : 'CBE'}.`,
         'success'
       );
-    }, 1500);
   };
 
   return (

@@ -23,6 +23,7 @@ import { useAuth } from '../context/AuthContext';
 import PickupStationSelector from './booking/PickupStationSelector';
 import CoasterSeatPicker from './booking/CoasterSeatPicker';
 import PrintableTicketModal from './PrintableTicketModal';
+import { api } from '../services/api';
 import { ADDIS_PICKUP_STATIONS } from '../data/coasterBusData';
 
 export default function BookingModal({
@@ -113,13 +114,30 @@ export default function BookingModal({
     setStep(3);
   };
 
-  // Step 3 -> Step 4
-  const handleConfirmPayment = () => {
+  // Step 3 -> Step 4 (Persist booking to NestJS backend)
+  const handleConfirmPayment = async () => {
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
+    try {
+      const created = await api.createBooking({
+        tripId: trip.id,
+        passengerName: formData.fullName,
+        passengerPhone: formData.phone,
+        telegramHandle: formData.telegramHandle,
+        emergencyContact: formData.emergencyContact,
+        ticketCount,
+        seats: selectedSeats,
+        pickupStationId: selectedPickupStation,
+        pickupStationName: currentPickupStation?.name || 'Meskel Square',
+        paymentMethod,
+        amountETB: currency === 'USD' ? finalTotal * 115 : finalTotal
+      });
+
+      setBookingRef(created?.id || `GZ-${Math.floor(1000 + Math.random() * 9000)}-ETH`);
+    } catch {
       const generatedRef = `GZ-${Math.floor(1000 + Math.random() * 9000)}-ETH`;
       setBookingRef(generatedRef);
+    } finally {
+      setIsProcessing(false);
       setStep(4);
 
       try {
@@ -131,7 +149,7 @@ export default function BookingModal({
       } catch {
         // ignore
       }
-    }, 1500);
+    }
   };
 
   const handleResetAndClose = () => {

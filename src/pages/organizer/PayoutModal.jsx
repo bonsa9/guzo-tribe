@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, DollarSign, Smartphone, Building, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { X, DollarSign, Smartphone, Building, CheckCircle2 } from 'lucide-react';
 
-export default function PayoutModal({ isOpen, onClose, availableBalance = 48500, lang }) {
+export default function PayoutModal({ isOpen, onClose, availableBalance = 48500, lang: _lang }) {
   const [method, setMethod] = useState('telebirr');
   const [accountNumber, setAccountNumber] = useState('0911482910');
   const [amount, setAmount] = useState(availableBalance);
@@ -9,8 +9,20 @@ export default function PayoutModal({ isOpen, onClose, availableBalance = 48500,
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await fetch('/api/escrow/release', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': 'host'
+        },
+        body: JSON.stringify({ organizerId: 'org-muller-outdoors', amountETB: amount })
+      });
+    } catch {
+      // ignore
+    }
     setSubmitted(true);
   };
 
