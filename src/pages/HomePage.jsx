@@ -3,6 +3,7 @@ import HeroSection from '../components/HeroSection';
 import MetricsBar from '../components/MetricsBar';
 import DestinationsSection from '../components/DestinationsSection';
 import VerifiedOrganizers from '../components/VerifiedOrganizers';
+import TrailCaravanVignette from '../components/TrailCaravanVignette';
 import TripCard from '../components/TripCard';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -108,6 +109,9 @@ export default function HomePage({
         lang={lang}
         onSelectDestination={handleSelectDestination}
       />
+
+      {/* Interactive Trail Caravan: Coaster, Hikers & Trail Cat */}
+      <TrailCaravanVignette lang={lang} />
 
       {/* Verified Organizers Section */}
       <VerifiedOrganizers
